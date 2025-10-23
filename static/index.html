@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Informações</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>📋 Novo Registro</h1>
+        
+        <form id="formulario">
+            <div class="form-group">
+                <label for="estado">Estado:</label>
+                <select id="estado" name="estado" required>
+                    <option value="">Selecione o estado...</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="responsavel">Responsável:</label>
+                <input type="text" id="responsavel" name="responsavel" 
+                       placeholder="Nome do responsável" required>
+            </div>
+
+            <div class="form-group">
+                <label for="payload">Conteúdo:</label>
+                <textarea id="payload" name="payload" rows="8" 
+                          placeholder="Digite o conteúdo aqui..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn-submit">Enviar Registro</button>
+        </form>
+
+        <div id="mensagem" class="mensagem"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
