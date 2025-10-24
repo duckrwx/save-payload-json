@@ -1,1 +1,1 @@
-web: ./target/release/registros-json
+web: ROCKET_PORT=$PORT ./target/release/registros-json

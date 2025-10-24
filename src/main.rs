@@ -65,6 +65,7 @@ async fn main() -> Result<(), AppError> {
         .map_err(AppError::AddressParseError)?;
     
     println!("🚀 Servidor rodando em http://localhost:{port}");
+    println!("🌍 Ambiente: {}", env::var("RAILWAY_ENVIRONMENT").unwrap_or_else(|_| "local".to_string()));
 
     // Não abre navegador em produção
     if env::var("RAILWAY_ENVIRONMENT").is_err() && 
@@ -87,11 +88,12 @@ async fn main() -> Result<(), AppError> {
 }
 
 async fn health_check() -> impl IntoResponse {
-    Json(serde_json::json!({
+    // Health check simples - não depende de nada externo
+    (StatusCode::OK, Json(serde_json::json!({
         "status": "ok",
-        "mode": "mongodb",
-        "timestamp": chrono::Local::now().to_rfc3339()
-    }))
+        "service": "registros-json",
+        "timestamp": chrono::Utc::now().to_rfc3339()
+    })))
 }
 
 async fn adicionar_registro(
