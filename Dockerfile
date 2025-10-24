@@ -20,7 +20,7 @@ COPY static ./static
 RUN touch src/main.rs && cargo build --release
 
 # Etapa 2: Runtime (execução)
-FROM debian:bookworm-slim
+FROM debian:sid-slim
 
 # Instala dependências necessárias
 RUN apt-get update && \
