@@ -1,1 +1,1 @@
-web: ROCKET_PORT=$PORT ./target/release/registros-json
+web: cargo run --release
