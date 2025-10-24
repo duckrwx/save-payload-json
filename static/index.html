@@ -3,37 +3,198 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Informações</title>
+    <title>Sistema de Registros - Anatel</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <h1>📋 Novo Registro</h1>
-        
-        <form id="formulario">
-            <div class="form-group">
-                <label for="estado">Estado:</label>
-                <select id="estado" name="estado" required>
-                    <option value="">Selecione o estado...</option>
-                </select>
+    <!-- Background animado -->
+    <div class="background-animation">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                    <rect width="32" height="32" rx="8" fill="url(#gradient)"/>
+                    <path d="M16 8L24 12V20L16 24L8 20V12L16 8Z" fill="white" opacity="0.9"/>
+                    <defs>
+                        <linearGradient id="gradient" x1="0" y1="0" x2="32" y2="32">
+                            <stop offset="0%" stop-color="#667eea"/>
+                            <stop offset="100%" stop-color="#764ba2"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span>Sistema de Registros</span>
+            </div>
+            <div class="status-badge" id="statusBadge">
+                <span class="status-dot"></span>
+                <span>Sistema Online</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Container Principal -->
+    <main class="main-container">
+        <div class="form-wrapper">
+            <!-- Card do Formulário -->
+            <div class="form-card">
+                <div class="form-header">
+                    <h1>Novo Registro de Informação</h1>
+                    <p>Preencha os campos abaixo para registrar uma nova informação no sistema</p>
+                </div>
+
+                <form id="formulario" class="modern-form">
+                    <!-- Estado -->
+                    <div class="form-group">
+                        <label for="estado" class="form-label">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                <path d="M8 0C3.58 0 0 3.58 0 8s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z"/>
+                                <path d="M8 4c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z"/>
+                            </svg>
+                            Estado
+                        </label>
+                        <div class="select-wrapper">
+                            <select id="estado" name="estado" required>
+                                <option value="">Selecione o estado...</option>
+                            </select>
+                            <svg class="select-arrow" width="12" height="8" viewBox="0 0 12 8">
+                                <path d="M1 1L6 6L11 1" stroke="currentColor" stroke-width="2" fill="none"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Responsável -->
+                    <div class="form-group">
+                        <label for="responsavel" class="form-label">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                <path d="M8 8c2.21 0 4-1.79 4-4S10.21 0 8 0 4 1.79 4 4s1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                            </svg>
+                            Responsável
+                        </label>
+                        <input 
+                            type="text" 
+                            id="responsavel" 
+                            name="responsavel" 
+                            placeholder="Digite o nome do responsável"
+                            required
+                        >
+                        <div class="input-feedback" id="responsavelFeedback"></div>
+                    </div>
+
+                    <!-- Payload -->
+                    <div class="form-group">
+                        <label for="payload" class="form-label">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                <path d="M2 0h12a2 2 0 012 2v12a2 2 0 01-2 2H2a2 2 0 01-2-2V2a2 2 0 012-2zm0 2v12h12V2H2zm2 2h8v2H4V4zm0 4h8v2H4V8zm0 4h5v2H4v-2z"/>
+                            </svg>
+                            Conteúdo da Informação
+                        </label>
+                        <textarea 
+                            id="payload" 
+                            name="payload" 
+                            rows="6" 
+                            placeholder="Digite aqui o conteúdo detalhado da informação..."
+                            required
+                        ></textarea>
+                        <div class="char-counter">
+                            <span id="charCount">0</span> caracteres
+                        </div>
+                    </div>
+
+                    <!-- Botões -->
+                    <div class="form-actions">
+                        <button type="reset" class="btn btn-secondary" id="btnLimpar">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                <path d="M8 0C3.58 0 0 3.58 0 8s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm4 10.59L10.59 12 8 9.41 5.41 12 4 10.59 6.59 8 4 5.41 5.41 4 8 6.59 10.59 4 12 5.41 9.41 8 12 10.59z"/>
+                            </svg>
+                            Limpar
+                        </button>
+                        <button type="submit" class="btn btn-primary" id="btnSubmit">
+                            <span class="btn-text">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                    <path d="M15.854 7.854l-4-4a.5.5 0 00-.708.708L14.293 7.5H.5a.5.5 0 000 1h13.793l-3.147 2.938a.5.5 0 00.708.708l4-4a.5.5 0 000-.708z"/>
+                                </svg>
+                                Enviar Registro
+                            </span>
+                            <span class="btn-loader">
+                                <span class="spinner"></span>
+                                Processando...
+                            </span>
+                        </button>
+                    </div>
+                </form>
             </div>
 
-            <div class="form-group">
-                <label for="responsavel">Responsável:</label>
-                <input type="text" id="responsavel" name="responsavel" 
-                       placeholder="Nome do responsável" required>
+            <!-- Card de Informações -->
+            <div class="info-card">
+                <div class="info-header">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                        <path d="M12 16V12M12 8H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    <h3>Informações do Sistema</h3>
+                </div>
+                <div class="info-content">
+                    <div class="info-item">
+                        <span class="info-label">Regional:</span>
+                        <span class="info-value" id="infoRegional">Será definida automaticamente</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Data:</span>
+                        <span class="info-value" id="infoData">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Status:</span>
+                        <span class="info-value status-ready">Pronto para registro</span>
+                    </div>
+                </div>
             </div>
+        </div>
+    </main>
 
-            <div class="form-group">
-                <label for="payload">Conteúdo:</label>
-                <textarea id="payload" name="payload" rows="8" 
-                          placeholder="Digite o conteúdo aqui..." required></textarea>
+    <!-- Toast de Notificação -->
+    <div class="toast" id="toast">
+        <div class="toast-icon"></div>
+        <div class="toast-content">
+            <div class="toast-title"></div>
+            <div class="toast-message"></div>
+        </div>
+        <button class="toast-close" onclick="closeToast()">×</button>
+    </div>
+
+    <!-- Modal de Confirmação -->
+    <div class="modal" id="modalConfirmacao">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-icon success">
+                    <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                        <circle cx="24" cy="24" r="22" fill="#10b981" opacity="0.1"/>
+                        <path d="M16 24L22 30L32 18" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <h2>Registro Salvo com Sucesso!</h2>
+                <p>Suas informações foram armazenadas no sistema.</p>
             </div>
-
-            <button type="submit" class="btn-submit">Enviar Registro</button>
-        </form>
-
-        <div id="mensagem" class="mensagem"></div>
+            <div class="modal-body">
+                <div class="success-details">
+                    <div class="detail-item">
+                        <span class="detail-label">ID:</span>
+                        <span class="detail-value" id="modalId">-</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeModal()">Entendi</button>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>
