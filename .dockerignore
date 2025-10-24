@@ -1,6 +1,21 @@
+# Diretórios
 target/
-.env
 .git/
-.gitignore
+.cargo/
+
+# Arquivos
+.env
+.env.*
 *.md
-*.txt
+.gitignore
+.dockerignore
+
+# Build artifacts
+**/*.rs.bk
+Cargo.lock
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

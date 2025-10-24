@@ -63,9 +63,8 @@ async fn main() -> Result<(), AppError> {
     let addr: SocketAddr = format!("0.0.0.0:{port}")
         .parse()
         .map_err(AppError::AddressParseError)?;
-    
+
     println!("🚀 Servidor rodando em http://localhost:{port}");
-    println!("🌍 Ambiente: {}", env::var("RAILWAY_ENVIRONMENT").unwrap_or_else(|_| "local".to_string()));
 
     // Não abre navegador em produção
     if env::var("RAILWAY_ENVIRONMENT").is_err() && 
@@ -88,7 +87,6 @@ async fn main() -> Result<(), AppError> {
 }
 
 async fn health_check() -> impl IntoResponse {
-    // Health check simples - não depende de nada externo
     (StatusCode::OK, Json(serde_json::json!({
         "status": "ok",
         "service": "registros-json",
@@ -103,8 +101,10 @@ async fn adicionar_registro(
     println!("\n📝 Nova requisição recebida!");
     println!("   Estado: {:?}", dados.estado);
     println!("   Responsável: {}", dados.responsavel);
-    
-    match dados.processar(state.storage.as_ref()).await {
+
+    match dados
+        .processar(state.storage.as_ref())
+        .await {
         Ok(mensagem) => {
             println!("✅ Sucesso: {mensagem}");
             (StatusCode::OK, Json(serde_json::json!({
@@ -116,7 +116,7 @@ async fn adicionar_registro(
             eprintln!("❌ Erro: {e}");
             (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({
                 "status": "erro",
-                "mensagem": format!("{}", e)
+                "mensagem": format!("{e}")
             })))
         }
     }

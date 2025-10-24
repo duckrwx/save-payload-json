@@ -27,7 +27,6 @@ impl TaskManager {
             self.payload,
         );
         
-        // Usa a trait genérica - funciona com FileStorage OU MongoStorage!
         storage.salvar(registro).await
     }
 }
