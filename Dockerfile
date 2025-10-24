@@ -1,12 +1,17 @@
-# Etapa 1: Build (compilação)
-FROM rust:latest as builder
+# ============================================
+# STAGE 1: Build com MUSL (binário estático)
+# ============================================
+FROM rust:alpine AS builder
+
+# Instala dependências de build
+RUN apk add --no-cache musl-dev pkgconfig openssl-dev openssl-libs-static
 
 WORKDIR /app
 
-# Copia arquivos de dependências
+# Copia dependências primeiro (para cache)
 COPY Cargo.toml Cargo.lock ./
 
-# Cria projeto dummy para cachear dependências
+# Build dummy para cachear dependências
 RUN mkdir src && \
     echo "fn main() {}" > src/main.rs && \
     cargo build --release && \
@@ -16,28 +21,26 @@ RUN mkdir src && \
 COPY src ./src
 COPY static ./static
 
-# Compila a aplicação
-RUN touch src/main.rs && cargo build --release
+# Build release com target estático
+RUN cargo build --release
 
-# Etapa 2: Runtime (execução)
-FROM debian:sid-slim
+# ============================================
+# STAGE 2: Runtime mínimo
+# ============================================
+FROM alpine:latest
 
-# Instala dependências necessárias
-RUN apt-get update && \
-    apt-get install -y ca-certificates libssl3 && \
-    rm -rf /var/lib/apt/lists/*
+# Instala apenas certificados SSL
+RUN apk add --no-cache ca-certificates
 
 WORKDIR /app
 
-# Copia executável da etapa anterior
-COPY --from=builder /app/target/release/registros-json /app/registros-json
-COPY --from=builder /app/static /app/static
+# Copia executável estático e pasta static
+COPY --from=builder /app/target/release/registros-json .
+COPY --from=builder /app/static ./static
 
 # Porta
 EXPOSE 8080
-
-# Variável de ambiente para porta
 ENV PORT=8080
 
 # Executa
-CMD ["/app/registros-json"]
+CMD ["./registros-json"]
