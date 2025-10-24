@@ -14,7 +14,7 @@ pub struct Registro {
 }
 
 impl Registro {
-    pub fn new(
+    pub const fn new(
         estado: Estado,
         regional: Regional,
         responsavel: String,
@@ -149,35 +149,35 @@ pub enum Regional {
 }
 
 impl Estado {
-    pub fn obter_regional(&self) -> Regional {
+    pub const fn obter_regional(self) -> Regional {
         match self {
-            Estado::AC => Regional::Gr11Uo2,
-            Estado::AL => Regional::Gr06Uo1,
-            Estado::AP => Regional::Gr11,
-            Estado::AM => Regional::Gr10Uo2,
-            Estado::BA => Regional::Gr08,
-            Estado::CE => Regional::Gr09,
-            Estado::DF => Regional::Uo1,
-            Estado::ES => Regional::Gr02Uo1,
-            Estado::GO => Regional::Gr07,
-            Estado::MA => Regional::Gr10Uo1,
-            Estado::MT => Regional::Gr07Uo1,
-            Estado::MS => Regional::Gr07Uo2,
-            Estado::MG => Regional::Gr04,
-            Estado::PA => Regional::Gr10,
-            Estado::PB => Regional::Gr06Uo2,
-            Estado::PR => Regional::Gr03,
-            Estado::PE => Regional::Gr06,
-            Estado::PI => Regional::Gr09Uo2,
-            Estado::RJ => Regional::Gr02,
-            Estado::RN => Regional::Gr09Uo1,
-            Estado::RS => Regional::Gr05,
-            Estado::RO => Regional::Gr11Uo1,
-            Estado::RR => Regional::Gr11Uo3,
-            Estado::SC => Regional::Gr03Uo1,
-            Estado::SP => Regional::Gr01,
-            Estado::SE => Regional::Gr08Uo1,
-            Estado::TO => Regional::Gr07Uo3,
+            Self::AC => Regional::Gr11Uo2,
+            Self::AL => Regional::Gr06Uo1,
+            Self::AP => Regional::Gr11,
+            Self::AM => Regional::Gr10Uo2,
+            Self::BA => Regional::Gr08,
+            Self::CE => Regional::Gr09,
+            Self::DF => Regional::Uo1,
+            Self::ES => Regional::Gr02Uo1,
+            Self::GO => Regional::Gr07,
+            Self::MA => Regional::Gr10Uo1,
+            Self::MT => Regional::Gr07Uo1,
+            Self::MS => Regional::Gr07Uo2,
+            Self::MG => Regional::Gr04,
+            Self::PA => Regional::Gr10,
+            Self::PB => Regional::Gr06Uo2,
+            Self::PR => Regional::Gr03,
+            Self::PE => Regional::Gr06,
+            Self::PI => Regional::Gr09Uo2,
+            Self::RJ => Regional::Gr02,
+            Self::RN => Regional::Gr09Uo1,
+            Self::RS => Regional::Gr05,
+            Self::RO => Regional::Gr11Uo1,
+            Self::RR => Regional::Gr11Uo3,
+            Self::SC => Regional::Gr03Uo1,
+            Self::SP => Regional::Gr01,
+            Self::SE => Regional::Gr08Uo1,
+            Self::TO => Regional::Gr07Uo3,
         }
     }
 }

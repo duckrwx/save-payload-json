@@ -12,7 +12,6 @@ target/
 
 # Build artifacts
 **/*.rs.bk
-Cargo.lock
 
 # IDE
 .vscode/

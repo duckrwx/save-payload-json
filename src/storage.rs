@@ -20,7 +20,7 @@ pub struct MongoStorage {
 }
 
 impl MongoStorage {
-    pub fn new(collection: Collection<Registro>) -> Self {
+    pub const fn new(collection: Collection<Registro>) -> Self {
         Self { collection }
     }
 }
@@ -38,6 +38,6 @@ impl Storage for MongoStorage {
             .as_object_id()
             .ok_or_else(|| AppError::DatabaseError("ID não gerado pelo MongoDB".into()))?;
         
-        Ok(format!("Registro salvo com ID: {}", id))
+        Ok(format!("Registro salvo com ID: {id}"))
     }
 }

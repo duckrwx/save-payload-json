@@ -10,8 +10,8 @@ RUN apt-get update && apt-get install -y \
 # Cria diretório de trabalho
 WORKDIR /app
 
-# Copia arquivos de dependências
-COPY Cargo.toml Cargo.lock ./
+# Copia arquivos de configuração
+COPY Cargo.toml ./
 COPY rust-toolchain.toml ./
 
 # Copia código fonte
