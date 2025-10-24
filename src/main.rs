@@ -21,7 +21,6 @@ use dotenv::dotenv;
 use std::env;
 use crate::error::AppError;
 
-// Estado compartilhado - usa trait Storage
 #[derive(Clone)]
 struct AppState {
     storage: Arc<dyn Storage>,
@@ -29,7 +28,6 @@ struct AppState {
 
 #[tokio::main]
 async fn main() -> Result<(), AppError> {
-    // Carrega variáveis de ambiente
     dotenv().ok();
     
     let mongodb_uri = env::var("MONGODB_URI")
@@ -39,7 +37,6 @@ async fn main() -> Result<(), AppError> {
     let collection_name = env::var("COLLECTION_NAME")
         .unwrap_or_else(|_| "registros".to_string());
     
-    // Conecta ao MongoDB
     println!("🔌 Conectando ao MongoDB...");
     let client = Client::with_uri_str(&mongodb_uri)
         .await
@@ -51,16 +48,15 @@ async fn main() -> Result<(), AppError> {
     println!("✅ Conectado ao MongoDB!");
     println!("📦 Database: {database_name}");
     println!("📁 Collection: {collection_name}");
-    
-    // Cria MongoStorage e envolve em Arc para compartilhar entre threads
+
     let storage: Arc<dyn Storage> = Arc::new(MongoStorage::new(collection));
     let state = AppState { storage };
     
-    // Configuração de rotas
+    // ✅ CORREÇÃO AQUI - fallback_service em vez de nest_service
     let app = Router::new()
-        .nest_service("/", ServeDir::new("static"))
         .route("/api/adicionar", post(adicionar_registro))
         .route("/api/health", get(health_check))
+        .fallback_service(ServeDir::new("static"))  // ← MUDOU AQUI!
         .with_state(state);
     
     let port = env::var("PORT").unwrap_or_else(|_| "3000".to_string());
@@ -69,13 +65,12 @@ async fn main() -> Result<(), AppError> {
         .map_err(AppError::AddressParseError)?;
     
     println!("🚀 Servidor rodando em http://localhost:{port}");
-    
-    // Abre navegador apenas localmente
-    if env::var("RAILWAY_ENVIRONMENT").is_err() && env::var("DO_APP_NAME").is_err() {
+
+    // Não abre navegador em produção
+    if env::var("RAILWAY_ENVIRONMENT").is_err() && 
+       env::var("DO_APP_NAME").is_err() {
         if let Err(e) = webbrowser::open(&format!("http://localhost:{port}")) {
             eprintln!("⚠️ Não foi possível abrir o navegador: {e}");
-        } else {
-            println!("🌐 Navegador aberto automaticamente!");
         }
     }
     
@@ -107,7 +102,6 @@ async fn adicionar_registro(
     println!("   Estado: {:?}", dados.estado);
     println!("   Responsável: {}", dados.responsavel);
     
-    // Usa a trait Storage - funciona com qualquer implementação!
     match dados.processar(state.storage.as_ref()).await {
         Ok(mensagem) => {
             println!("✅ Sucesso: {mensagem}");
@@ -120,7 +114,7 @@ async fn adicionar_registro(
             eprintln!("❌ Erro: {e}");
             (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({
                 "status": "erro",
-                "mensagem": format!("{e}")
+                "mensagem": format!("{}", e)
             })))
         }
     }
