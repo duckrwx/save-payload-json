@@ -1,5 +1,5 @@
 # Etapa 1: Build (compilação)
-FROM rust:1.75 as builder
+FROM rust:latest as builder
 
 WORKDIR /app
 
