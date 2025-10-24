@@ -1,53 +1,54 @@
-# Dockerfile multi-stage para Railway
-FROM rust:1.75-slim as builder
+# Build stage
+FROM rust:1.83-bookworm as builder
 
-# Instala dependências do sistema
+WORKDIR /app
+
+# Instala dependências de build
 RUN apt-get update && apt-get install -y \
     pkg-config \
     libssl-dev \
+    ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-# Cria diretório de trabalho
-WORKDIR /app
+# Copia arquivos de dependências primeiro (cache)
+COPY Cargo.toml Cargo.lock ./
 
-# Copia arquivos de configuração
-COPY Cargo.toml ./
-COPY rust-toolchain.toml ./
+# Build dummy para cachear dependências
+RUN mkdir src && \
+    echo "fn main() {}" > src/main.rs && \
+    cargo build --release && \
+    rm -rf src
 
-# Copia código fonte
+# Copia código real
 COPY src ./src
 COPY static ./static
 
-# Build em release mode
+# Build release
 RUN cargo build --release
 
-# Stage 2: Runtime
+# Runtime stage
 FROM debian:bookworm-slim
 
-# Instala dependências runtime
+# Instala dependências runtime + curl para healthcheck
 RUN apt-get update && apt-get install -y \
     ca-certificates \
     libssl3 \
+    curl \
     && rm -rf /var/lib/apt/lists/*
-
-# Cria usuário não-root
-RUN useradd -m -u 1000 appuser
 
 WORKDIR /app
 
-# Copia binário compilado
-COPY --from=builder /app/target/release/registros-json /app/registros-json
-COPY --from=builder /app/static /app/static
+# Copia executável e pasta static
+COPY --from=builder /app/target/release/registros-json .
+COPY --from=builder /app/static ./static
 
-# Muda para usuário não-root
-USER appuser
+# Porta correta
+EXPOSE 8080
+ENV PORT=8080
 
-# Expõe porta (Railway usa variável PORT)
-EXPOSE 3000
-
-# Health check
+# Health check (agora com curl instalado)
 HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
-    CMD curl -f http://localhost:${PORT:-3000}/api/health || exit 1
+    CMD curl -f http://localhost:8080/api/health || exit 1
 
-# Comando de inicialização
+# Executa
 CMD ["./registros-json"]
